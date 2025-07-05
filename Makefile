@@ -37,8 +37,8 @@ TAR_PREFIX := homebrew-gajevids-$(TAG)/   # must match GitHub prefix
 #    • calculate sha256 and patch formula
 # ------------------------------------------------------------
 bump:
-	@echo "→ Staging dist/ binaries and formula"
-	@git add dist/gajevids dist/gajevids-go $(FORMULA)
+	@echo "→ Staging dist/ binaries"
+	@git add dist/gajevids dist/gajevids-go
 
 	@echo "→ Creating tarball from staged index"
 	@TREE=$$(git write-tree); \
@@ -48,6 +48,7 @@ bump:
 	@SHA=$$(shasum -a 256 $(TMP_TAR) | awk '{print $$1}'); \
 		echo "   SHA256 = $$SHA"; \
 		\
+		# --- patch Formula ---
 		sed -Ei.bak \
 			's/^([[:space:]]*VERSION[[:space:]]*=[[:space:]]*")v?[0-9]+\.[0-9]+\.[0-9]+(".*)/\1$(TAG)\2/' \
 			$(FORMULA) && rm -f "$(FORMULA).bak"; \
@@ -55,7 +56,10 @@ bump:
 			's/^([[:space:]]*sha256[[:space:]]*")[0-9a-f]{64}(".*)/\1'"$$SHA"'\2/' \
 			$(FORMULA) && rm -f "$(FORMULA).bak"; \
 		\
-		echo "✓ Patched $(FORMULA) → VERSION=$(TAG), sha256=$$SHA"
+		echo "✓ Patched $(FORMULA) → VERSION=$(TAG), sha256=$$SHA"; \
+		\
+		echo "→ Staging patched Formula"; \
+		git add $(FORMULA)
 
 # ------------------------------------------------------------
 # 2) commit : commit the staged changes
