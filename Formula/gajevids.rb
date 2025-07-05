@@ -1,9 +1,9 @@
 class Gajevids < Formula
-  VERSION = "v0.2.9"
+  VERSION = "v0.2.10"
   desc     "YAML-based FFmpeg video composition tool"
   homepage "https://github.com/gajeroll/homebrew-gajevids"
   url      "https://github.com/gajeroll/homebrew-gajevids/archive/refs/tags/#{VERSION}.tar.gz"
-  sha256   "TO_BE_REPLACED"
+  sha256   "effe81d5d88579ff1a31dbe20f5f156aa1982937e1412d71b3e04e7687754646"
   license  "MIT"
   head     "https://github.com/gajeroll/homebrew-gajevids.git", branch: "main"
 
