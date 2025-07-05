@@ -1,7 +1,7 @@
 # Makefile for Homebrew Formula update automation
 
 TAG ?= v0.1.3
-REPO = gajeroll/gajevids-homebrew
+REPO = gajeroll/homebrew-gajevids
 FORMULA = Formula/gajevids.rb
 
 

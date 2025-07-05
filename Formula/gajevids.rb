@@ -1,10 +1,10 @@
 class Gajevids < Formula
   desc "YAML-based FFmpeg video composition tool"
-  homepage "https://github.com/gajeroll/gajevids-homebrew"
-  url "https://github.com/gajeroll/gajevids-homebrew/archive/refs/tags/v0.1.4.tar.gz"
+  homepage "https://github.com/gajeroll/homebrew-gajevids"
+  url "https://github.com/gajeroll/homebrew-gajevids/archive/refs/tags/v0.1.4.tar.gz"
   sha256 "89349bb626d35a3bba961d55af4a0d09a5fe109baab9d05cd29aa67cbca18855"
   license "MIT"
-  head "https://github.com/gajeroll/gajevids-homebrew.git", branch: "main"
+  head "https://github.com/gajeroll/homebrew-gajevids.git", branch: "main"
 
   depends_on "go" => :build
   depends_on "ffmpeg"
