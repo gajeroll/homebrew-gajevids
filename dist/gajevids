@@ -1,0 +1,327 @@
+#!/bin/bash
+
+# gajevids - YAML-based FFmpeg video composition tool
+# Usage: gajevids <config.yml>
+
+set -euo pipefail
+
+VERSION="0.1.0"
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+PROJECT_DIR="$(cd "$SCRIPT_DIR" && pwd)"
+
+# Colors for output
+RED='\033[0;31m'
+GREEN='\033[0;32m'
+YELLOW='\033[1;33m'
+BLUE='\033[0;34m'
+NC='\033[0m' # No Color
+
+print_usage() {
+    echo -e "${BLUE}gajevids v${VERSION}${NC}"
+    echo -e "${BLUE}YAML-based FFmpeg video composition tool${NC}"
+    echo ""
+    echo -e "${GREEN}Usage:${NC}"
+    echo "  gajevids <config.yml>     Process video composition"
+    echo "  gajevids --help          Show this help"
+    echo "  gajevids --version       Show version"
+    echo "  gajevids --example       Create example configuration"
+    echo ""
+    echo -e "${GREEN}Example:${NC}"
+    echo "  gajevids video_config.yml"
+    echo ""
+    echo -e "${GREEN}Configuration:${NC}"
+    echo "  Create a YAML file with video sources, transitions, and timeline"
+    echo "  See example.yml for reference"
+}
+
+print_version() {
+    echo "gajevids v${VERSION}"
+}
+
+create_example() {
+    local example_file="gajevids_example.yml"
+    
+    cat > "$example_file" << 'EOF'
+# gajevids configuration example
+output: "output.mp4"
+
+# Video settings (optional - defaults shown)
+fps: 30
+resolution: "1280x720"
+
+# Video source files
+videos:
+  intro: "intro.mp4"
+  main: "main_content.mp4"
+  outro: "outro.mp4"
+
+# Transition definitions
+transitions:
+  fade:
+    type: fadeblack
+    duration: 0.5
+  dissolve:
+    type: dissolve
+    duration: 1.0
+  slide:
+    type: slideleft
+    duration: 0.3
+
+# Default transition when none specified
+default_transition: fade
+
+# Timeline - sequence of videos and transitions
+timeline:
+  - video: intro
+  - transition: dissolve
+  - video: main
+  - transition: slide
+  - video: outro
+EOF
+
+    echo -e "${GREEN}Created example configuration:${NC} $example_file"
+    echo -e "${YELLOW}Edit this file with your video paths and run:${NC}"
+    echo "  gajevids $example_file"
+}
+
+# Check if required tools are available
+check_dependencies() {
+    local missing=()
+    
+    if ! command -v ffmpeg &> /dev/null; then
+        missing+=("ffmpeg")
+    fi
+    
+    if ! command -v ffprobe &> /dev/null; then
+        missing+=("ffprobe")
+    fi
+    
+    if [ ${#missing[@]} -ne 0 ]; then
+        echo -e "${RED}Error: Missing required dependencies:${NC}"
+        for dep in "${missing[@]}"; do
+            echo "  - $dep"
+        done
+        echo ""
+        echo -e "${YELLOW}Please install the missing dependencies:${NC}"
+        echo "  brew install ffmpeg  # macOS"
+        echo "  sudo apt install ffmpeg  # Ubuntu/Debian"
+        echo "  sudo yum install ffmpeg  # CentOS/RHEL"
+        exit 1
+    fi
+}
+
+# Try to use Go binary if available, otherwise use shell implementation
+process_video() {
+    local config_file="$1"
+    
+    # Check if config file exists
+    if [ ! -f "$config_file" ]; then
+        echo -e "${RED}Error: Configuration file not found:${NC} $config_file"
+        exit 1
+    fi
+    
+    echo -e "${BLUE}Processing video composition:${NC} $config_file"
+    
+    # Try Go binary first
+    local go_binary="$PROJECT_DIR/go/gajevids"
+    if [ -f "$go_binary" ]; then
+        echo -e "${GREEN}Using Go implementation${NC}"
+        "$go_binary" "$config_file"
+    else
+        # Try to find Go binary in the same directory as this script
+        local go_binary_local="$SCRIPT_DIR/gajevids-go"
+        if [ -f "$go_binary_local" ]; then
+            echo -e "${GREEN}Using Go implementation${NC}"
+            "$go_binary_local" "$config_file"
+        else
+            # Try to build Go binary
+            if [ -f "$PROJECT_DIR/go/cmd/composer/main.go" ]; then
+                echo -e "${YELLOW}Building Go binary...${NC}"
+                if (cd "$PROJECT_DIR/go" && go build -o gajevids ./cmd/composer); then
+                    echo -e "${GREEN}Successfully built Go binary${NC}"
+                    "$PROJECT_DIR/go/gajevids" "$config_file"
+                else
+                    echo -e "${YELLOW}Go build failed, using shell implementation${NC}"
+                    use_shell_implementation "$config_file"
+                fi
+            else
+                echo -e "${YELLOW}Using shell implementation${NC}"
+                use_shell_implementation "$config_file"
+            fi
+        fi
+    fi
+}
+
+use_shell_implementation() {
+    local config_file="$1"
+    
+    # Check if yq is available for YAML processing
+    if ! command -v yq &> /dev/null; then
+        echo -e "${RED}Error: yq is required for shell implementation${NC}"
+        echo -e "${YELLOW}Install yq:${NC}"
+        echo "  brew install yq  # macOS"
+        echo "  sudo apt install yq  # Ubuntu/Debian"
+        echo ""
+        echo -e "${YELLOW}Or build the Go version by installing Go and running:${NC}"
+        echo "  cd [project_directory]/go && go build -o gajevids ./cmd/composer"
+        exit 1
+    fi
+    
+    # Check if bc is available for calculations
+    if ! command -v bc &> /dev/null; then
+        echo -e "${RED}Error: bc is required for shell implementation${NC}"
+        echo -e "${YELLOW}Install bc:${NC}"
+        echo "  brew install bc  # macOS"
+        echo "  sudo apt install bc  # Ubuntu/Debian"
+        exit 1
+    fi
+    
+    # Built-in shell implementation
+    shell_process_video "$config_file"
+}
+
+# Built-in shell implementation (integrated from gajevids.sh)
+shell_process_video() {
+    local CONFIG="$1"
+    
+    if [ ! -f "$CONFIG" ]; then
+        echo -e "${RED}Error: Configuration file not found:${NC} $CONFIG"
+        exit 1
+    fi
+    
+    local output=$(yq '.output' "$CONFIG" | tr -d '"')
+    local default_transition=$(yq '.default_transition' "$CONFIG" | tr -d '"')
+    
+    local fps=$(yq '.fps // 30' "$CONFIG" | tr -d '"')
+    local resolution=$(yq '.resolution // "1280x720"' "$CONFIG" | tr -d '"')
+    local width=$(echo "$resolution" | cut -d'x' -f1)
+    local height=$(echo "$resolution" | cut -d'x' -f2)
+    
+    local video_keys=()
+    local transitions=()
+    
+    # Parse timeline to extract video/transition sequence
+    local last_was_video=false
+    local timeline_length=$(yq '.timeline | length' "$CONFIG")
+    
+    for ((i=0; i<timeline_length; i++)); do
+        local entry=$(yq ".timeline[$i]" "$CONFIG")
+        if echo "$entry" | grep -q 'video:'; then
+            local key=$(echo "$entry" | yq '.video' | tr -d '"')
+            video_keys+=("$key")
+            
+            # Add default transition if video entries are consecutive
+            if $last_was_video && [ ${#video_keys[@]} -gt 1 ]; then
+                transitions+=("$default_transition")
+            fi
+            last_was_video=true
+        elif echo "$entry" | grep -q 'transition:'; then
+            if $last_was_video; then
+                local trans=$(echo "$entry" | yq '.transition' | tr -d '"')
+                transitions+=("$trans")
+                last_was_video=false
+            else
+                echo "Skipping redundant transition at index $i"
+            fi
+        fi
+    done
+    
+    # Fill in any missing transitions with default
+    while [ ${#transitions[@]} -lt $(( ${#video_keys[@]} - 1 )) ]; do
+        transitions+=("$default_transition")
+    done
+    
+    # Build input arguments and calculate durations/start times
+    local inputs=()
+    local durations=()
+    local starts=()
+    local labels=()
+    local filters=()
+    
+    for ((i=0; i<${#video_keys[@]}; i++)); do
+        local key="${video_keys[$i]}"
+        local file=$(yq ".videos.$key" "$CONFIG" | tr -d '"')
+        inputs+=("-i" "$file")
+        
+        local dur=$(ffprobe -v error -select_streams v:0 -show_entries format=duration \
+                  -of default=noprint_wrappers=1:nokey=1 "$file" | head -n1)
+        
+        if ! [[ "$dur" =~ ^[0-9]+(\.[0-9]+)?$ ]]; then
+            echo -e "${RED}Error: Could not determine duration for $file${NC}"
+            exit 1
+        fi
+        durations+=("$dur")
+        
+        if (( i == 0 )); then
+            starts+=(0)
+        else
+            local prev_start="${starts[$((i-1))]}"
+            local prev_dur="${durations[$((i-1))]}"
+            local trans="${transitions[$((i-1))]}"
+            local trans_dur=$(yq ".transitions.$trans.duration" "$CONFIG")
+            [[ "$trans_dur" == "null" || -z "$trans_dur" ]] && trans_dur=0
+            local start=$(echo "$prev_start + $prev_dur - $trans_dur" | bc -l)
+            starts+=("$start")
+        fi
+    done
+    
+    # Build video filters
+    for ((i=0; i<${#video_keys[@]}; i++)); do
+        local label="v$i"
+        labels+=("$label")
+        filters+=("[$i:v]trim=duration=${durations[$i]},setpts=PTS-STARTPTS+${starts[$i]}/TB,scale=${width}:${height},format=yuv420p,fps=${fps}[$label]")
+    done
+    
+    # Build transition filters
+    local current="${labels[0]}"
+    local xfade_count=0
+    
+    for ((i=1; i<${#labels[@]}; i++)); do
+        local prev="$current"
+        local curr="${labels[$i]}"
+        local trans="${transitions[$((i-1))]}"
+        local type=$(yq ".transitions.$trans.type" "$CONFIG" | tr -d '"')
+        local duration=$(yq ".transitions.$trans.duration" "$CONFIG")
+        [[ "$duration" == "null" || -z "$duration" ]] && duration=0
+        local offset="${starts[$i]}"
+        local out="x$xfade_count"
+        filters+=("[$prev][$curr]xfade=transition=${type}:duration=${duration}:offset=${offset}[$out]")
+        current="$out"
+        ((xfade_count++))
+    done
+    
+    local filter_complex=$(IFS=";"; echo "${filters[*]}")
+    
+    echo "Running FFmpeg with resolution ${width}x${height} and fps ${fps}..."
+    ffmpeg "${inputs[@]}" -filter_complex "$filter_complex" -map "[$current]" -y "$output"
+}
+
+# Main execution
+main() {
+    case "${1:-}" in
+        --help|-h)
+            print_usage
+            exit 0
+            ;;
+        --version|-v)
+            print_version
+            exit 0
+            ;;
+        --example)
+            create_example
+            exit 0
+            ;;
+        "")
+            echo -e "${RED}Error: No configuration file specified${NC}"
+            echo ""
+            print_usage
+            exit 1
+            ;;
+        *)
+            check_dependencies
+            process_video "$1"
+            ;;
+    esac
+}
+
+main "$@" 
