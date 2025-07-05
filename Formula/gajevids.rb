@@ -1,5 +1,5 @@
 class Gajevids < Formula
-  VERSION = "v0.2.3"
+  VERSION = "v0.2.4"
   desc     "YAML-based FFmpeg video composition tool"
   homepage "https://github.com/gajeroll/homebrew-gajevids"
   url      "https://github.com/gajeroll/homebrew-gajevids/archive/refs/tags/#{VERSION}.tar.gz"
