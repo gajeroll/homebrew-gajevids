@@ -50,7 +50,6 @@ This formula automatically installs the required dependencies:
 
 - `ffmpeg` - Video processing
 - `yq` - YAML processing
-- `go` - For building the Go binary
 
 ## Example Configuration
 
