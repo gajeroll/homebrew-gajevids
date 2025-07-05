@@ -37,13 +37,13 @@ TAR_PREFIX := homebrew-gajevids-$(TAG)/   # must match GitHub prefix
 #    • patch VERSION & sha256 in Formula, then stage Formula
 # ------------------------------------------------------------
 bump:
-	@echo "→ Staging dist/ binaries"
-	@git add dist/gajevids dist/gajevids-go
+	@echo "→ Staging dist/ binaries and formula"
+	@git add dist/gajevids dist/gajevids-go $(FORMULA)
 
-	@echo "→ Creating tarball (dist/ only)"
+	@echo "→ Creating tarball (formula is export-ignored)"
 	@TREE=$$(git write-tree); \
-		git archive $$TREE dist --prefix=$(TAR_PREFIX) \
-								--format=tar.gz -o $(TMP_TAR)
+		git archive --format=tar.gz --prefix=$(TAR_PREFIX) \
+								-o $(TMP_TAR) $$TREE
 
 	@echo "→ Calculating sha256 ..."
 	@SHA=$$(shasum -a 256 $(TMP_TAR) | awk '{print $$1}'); \
@@ -53,11 +53,9 @@ bump:
 			's/^([[:space:]]*VERSION[[:space:]]*=[[:space:]]*")v?[0-9]+\.[0-9]+\.[0-9]+(".*)/\1$(TAG)\2/' \
 			$(FORMULA) && rm -f "$(FORMULA).bak"; \
 		sed -Ei.bak \
-			's/^([[:space:]]*sha256[[:space:]]*")[0-9a-f]{64}(".*)/\1'"$$SHA"'\2/' \
+			's/^([[:space:]]*sha256[[:space:]]*")[^"]+(".*)/\1'"$$SHA"'\2/' \
 			$(FORMULA) && rm -f "$(FORMULA).bak"; \
-		\
 		echo "✓ Patched $(FORMULA) → VERSION=$(TAG), sha256=$$SHA"; \
-		echo "→ Staging patched Formula"; \
 		git add $(FORMULA)
 
 # ------------------------------------------------------------
