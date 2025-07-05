@@ -11,14 +11,8 @@ class Gajevids < Formula
   depends_on "yq"
 
   def install
-    # Build Go binary
-    cd "go" do
-      system "go", "build", "-o", "gajevids-go", "./cmd/composer"
-      bin.install "gajevids-go"
-    end
-
-    # Install main script
-    bin.install "gajevids"
+    # Install prebuilt Go binary
+    bin.install "bin/gajevids"
 
     # Install documentation
     doc.install "README.md"
