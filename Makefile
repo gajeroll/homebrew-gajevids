@@ -1,65 +1,82 @@
 # ------------------------------------------------------------
-# Makefile — Homebrew Formula bump & release automation
+# Makefile — Homebrew Formula bump & release (dist/ layout)
 # ------------------------------------------------------------
-#
-# Usage
-#   $ make release              # bump, commit, tag, push
-#   $ TAG=v1.2.3 make release   # use an explicit tag
-#
 # Requirements
 #   • macOS or Linux (BSD or GNU sed supported)
-#   • curl, awk, shasum, git
-#
+#   • git, awk, shasum
+# Usage
+#   $ make release            # bump version, commit, tag, push
+#   $ TAG=v1.2.3 make release # use an explicit tag
 # License: MIT
 # ------------------------------------------------------------
 
-# GitHub repository (owner/repo)
-REPO    := gajeroll/homebrew-gajevids
+REPO        := gajeroll/homebrew-gajevids        # GitHub tap repository
+FORMULA     := Formula/gajevids.rb               # Formula path
 
-# Path to the Homebrew formula file
-FORMULA := Formula/gajevids.rb
-
-# ------------------------------------------------------------------
-# Derive the next tag if TAG is not supplied:
-#   • Reads VERSION string in the formula (e.g. "v0.1.7")
-#   • Increments the patch number → "v0.1.8"
-# ------------------------------------------------------------------
+# ------------------------------------------------------------
+# Auto-increment patch version (vX.Y.Z → vX.Y.(Z+1))
+# ------------------------------------------------------------
 ifeq ($(strip $(TAG)),)
 TAG := $(shell \
-  awk -F'"' '/VERSION *=/ {sub(/^v/,"",$$2); split($$2,v,"."); v[3]++; \
-              printf "v%s.%s.%s\n", v[1], v[2], v[3] }' $(FORMULA))
+  awk -F'"' '/VERSION *=/ {sub(/^v/, "", $$2); split($$2,v,"."); v[3]++; \
+            printf "v%s.%s.%s\n", v[1], v[2], v[3] }' $(FORMULA))
 endif
 
-.PHONY: bump commit tag release
+TMP_TAR     := /tmp/$(TAG).tar.gz
+# GitHub’s automatic tarball prefix is "<repo>-<tag>/" — keep it identical
+TAR_PREFIX  := homebrew-gajevids-$(TAG)/
 
-# 1) Download the tarball, compute sha256, and update the formula
+.PHONY: bump commit tag release clean
+
+# ------------------------------------------------------------
+# 1) bump
+#    • create a tarball of HEAD
+#    • calculate its sha256
+#    • patch VERSION and sha256 in the Formula
+# ------------------------------------------------------------
 bump:
-	@echo "→ Bumping $(FORMULA) to $(TAG)"
-	curl -sL -o /tmp/$(TAG).tar.gz \
-		https://github.com/$(strip $(REPO))/archive/refs/tags/$(TAG).tar.gz
-	SHA=$$(shasum -a 256 /tmp/$(TAG).tar.gz | awk '{print $$1}'); \
-	\
-	# Update VERSION (handles optional leading "v" and varying indent)
-	sed -Ei.bak \
-		"s/^([[:space:]]*VERSION[[:space:]]*=[[:space:]]*\")v?[0-9]+\.[0-9]+\.[0-9]+/\1$(TAG)/" \
-		$(FORMULA) && rm -f $(FORMULA).bak; \
-	\
-	# Update sha256 (64-char hex)
-	sed -Ei.bak \
-		"s/^([[:space:]]*sha256[[:space:]]*\")[0-9a-f]{64}/\1$$SHA/" \
-		$(FORMULA) && rm -f $(FORMULA).bak; \
-	echo "✓ Formula updated (VERSION=$(TAG), sha256=$$SHA)"
+	@echo "→ Archiving current tree to $(TMP_TAR)"
+	@git archive --format=tar.gz --prefix=$(TAR_PREFIX) -o $(TMP_TAR) HEAD
+	@echo "→ Calculating sha256 ..."
+	@SHA=$$(shasum -a 256 $(TMP_TAR) | awk '{print $$1}'); \
+	 echo "   SHA256 = $$SHA"; \
+	 \
+	 # --- update VERSION ---
+	 sed -Ei.bak \
+	     "s/^([[:space:]]*VERSION[[:space:]]*=[[:space:]]*\")v?[0-9]+\.[0-9]+\.[0-9]+/\1$(TAG)/" \
+	     $(FORMULA) && rm -f $(FORMULA).bak; \
+	 \
+	 # --- update sha256 ---
+	 sed -Ei.bak \
+	     "s/^([[:space:]]*sha256[[:space:]]*\")[0-9a-f]{64}/\1$$SHA/" \
+	     $(FORMULA) && rm -f $(FORMULA).bak; \
+	 \
+	 echo "✓ Patched $(FORMULA) → VERSION=$(TAG), sha256=$$SHA"
 
-# 2) Commit the formula change
+# ------------------------------------------------------------
+# 2) commit : stage dist/ binaries and Formula, then commit
+# ------------------------------------------------------------
 commit: bump
-	git add $(FORMULA)
-	git commit -m "Formula: bump to $(TAG)"
+	git add dist/gajevids dist/gajevids-go $(FORMULA)
+	git commit -m "gajevids $(TAG) (dist layout)"
 
-# 3) Tag the commit and push code plus tags
+# ------------------------------------------------------------
+# 3) tag : create an annotated tag and push with code
+# ------------------------------------------------------------
 tag: commit
 	git tag -a $(TAG) -m "Release $(TAG)"
-	git push origin HEAD --tags
+	git push origin main --tags
 
-# Convenience target: execute the full workflow in one go
+# ------------------------------------------------------------
+# 4) release : convenience target (bump → commit → tag)
+# ------------------------------------------------------------
 release: tag
-	@echo "🎉  Release $(TAG) is ready!"
+	@echo "🎉  Release $(TAG) pushed."
+	@echo "    Homebrew tarball URL:"
+	@echo "    https://github.com/$(REPO)/archive/refs/tags/$(TAG).tar.gz"
+
+# ------------------------------------------------------------
+# clean : remove temporary archive
+# ------------------------------------------------------------
+clean:
+	@rm -f $(TMP_TAR)
