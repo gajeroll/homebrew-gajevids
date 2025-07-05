@@ -1,7 +1,7 @@
 class Gajevids < Formula
   desc "YAML-based FFmpeg video composition tool"
   homepage "https://github.com/gajeroll/gajevids-homebrew"
-  url "https://github.com/gajeroll/gajevids-homebrew/archive/refs/tags/v0.1.0.tar.gz"
+  url "https://github.com/gajeroll/gajevids-homebrew/archive/refs/tags/v0.1.2.tar.gz"
   sha256 "0019dfc4b32d63c1392aa264aed2253c1e0c2fb09216f8e2cc269bbfb8bb49b5"
   license "MIT"
   head "https://github.com/gajeroll/gajevids-homebrew.git", branch: "main"
@@ -26,7 +26,7 @@ class Gajevids < Formula
 
   test do
     # Test version output
-    assert_match "gajevids v0.1.0", shell_output("#{bin}/gajevids --version")
+    assert_match "gajevids v0.1.2", shell_output("#{bin}/gajevids --version")
     
     # Test help output
     assert_match "YAML-based FFmpeg video composition tool", shell_output("#{bin}/gajevids --help")
