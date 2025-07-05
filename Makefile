@@ -10,8 +10,10 @@
 # License: MIT
 # ------------------------------------------------------------
 
-REPO        := gajeroll/homebrew-gajevids   # GitHub tap repository
-FORMULA     := Formula/gajevids.rb          # Path to the formula
+# GitHub tap repository (owner/repo)
+REPO   := gajeroll/homebrew-gajevids
+# Path to the formula
+FORMULA := Formula/gajevids.rb
 
 # ------------------------------------------------------------
 # Auto-increment patch version (vX.Y.Z → vX.Y.(Z+1))
@@ -22,16 +24,16 @@ TAG := $(shell \
 						printf "v%s.%s.%s\n", v[1], v[2], v[3] }' $(FORMULA))
 endif
 
-TMP_TAR     := /tmp/$(TAG).tar.gz
-TAR_PREFIX  := homebrew-gajevids-$(TAG)/   # Must match GitHub’s auto-prefix
+TMP_TAR    := /tmp/$(TAG).tar.gz
+TAR_PREFIX := homebrew-gajevids-$(TAG)/   # must match GitHub auto-prefix
 
 .PHONY: bump commit tag release clean
 
 # ------------------------------------------------------------
 # 1) bump
-#     • Create a tarball of HEAD
-#     • Calculate sha256
-#     • Patch VERSION and sha256 in the formula
+#     • create tarball of HEAD
+#     • calculate sha256
+#     • patch VERSION and sha256 in the formula
 # ------------------------------------------------------------
 bump:
 	@echo "→ Archiving HEAD to $(TMP_TAR)"
@@ -60,14 +62,14 @@ commit: bump
 	git commit -m "gajevids $(TAG) (dist layout)"
 
 # ------------------------------------------------------------
-# 3) tag : create an annotated tag and push
+# 3) tag : create annotated tag and push
 # ------------------------------------------------------------
 tag: commit
 	git tag -a $(TAG) -m "Release $(TAG)"
 	git push origin main --tags
 
 # ------------------------------------------------------------
-# 4) release : convenience target (bump → commit → tag)
+# 4) release : bump → commit → tag (one-shot)
 # ------------------------------------------------------------
 release: tag
 	@echo "🎉  Release $(TAG) pushed."
