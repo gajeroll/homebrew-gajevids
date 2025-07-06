@@ -64,8 +64,10 @@ output: "output.mp4"
 # Frame rate (defaults to 30)
 fps: 24
 
-# Resolution in WIDTHxHEIGHT (defaults to 1280x720)
-resolution: "1920x1080"
+# Resolution (defaults to 1280x720)
+resolution:
+  w: 1280
+  h: 720
 
 # [Required]
 # Video source files
