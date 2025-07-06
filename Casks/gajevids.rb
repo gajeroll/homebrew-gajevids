@@ -2,44 +2,46 @@
 cask "gajevids" do
   desc "YAML-based FFmpeg video composition tool"
   homepage "https://github.com/gajeroll/gajevids"
-  version "0.3.13"
+  version "0.3.14"
 
   livecheck do
     skip "Auto-generated on release."
   end
 
-  binary "gajevids-go"
+  binary "gajevids"
 
   on_macos do
     on_intel do
-      url "https://github.com/gajeroll/gajevids/releases/download/v0.3.13/gajevids_0.3.13_darwin_amd64.tar.gz"
-      sha256 "904575b010fd4b3ac14b040328c27d61a857cc7d7d6f0d02149bf087ac13929d"
+      url "https://github.com/gajeroll/gajevids/releases/download/v0.3.14/gajevids_0.3.14_darwin_amd64.tar.gz"
+      sha256 "bf215704cd62083c67a18d1d149406d8b688722921c220e718e50fb361d42a99"
     end
     on_arm do
-      url "https://github.com/gajeroll/gajevids/releases/download/v0.3.13/gajevids_0.3.13_darwin_arm64.tar.gz"
-      sha256 "26c912a374fd8fe133a95d01d128099aaf9deba0ca24fd2e85afc0172ab8fafa"
+      url "https://github.com/gajeroll/gajevids/releases/download/v0.3.14/gajevids_0.3.14_darwin_arm64.tar.gz"
+      sha256 "eda5a214a6e9e3c5d1148b44a412a9e430f6fdd64944007efd069cf81dfd578c"
     end
   end
 
   on_linux do
     on_intel do
-      url "https://github.com/gajeroll/gajevids/releases/download/v0.3.13/gajevids_0.3.13_linux_amd64.tar.gz"
-      sha256 "6402f4d9e8c2d031914d79e84c07bb0df8608642606cc6e96011479c5a8b2c8f"
+      url "https://github.com/gajeroll/gajevids/releases/download/v0.3.14/gajevids_0.3.14_linux_amd64.tar.gz"
+      sha256 "4c70454e14d3e60e71e7ba4d3eae19b92ad47b10aa7c5f3eb8b524da27105ffa"
     end
     on_arm do
-      url "https://github.com/gajeroll/gajevids/releases/download/v0.3.13/gajevids_0.3.13_linux_arm64.tar.gz"
-      sha256 "7279db1d4f24fab64eb2177b4eadd1df84d1f9d8e1b76360d46c009bfa393ebd"
+      url "https://github.com/gajeroll/gajevids/releases/download/v0.3.14/gajevids_0.3.14_linux_arm64.tar.gz"
+      sha256 "37dbe7f12b1c4dbe9e62f26d2a66033ffe11852cface81b66f0384487c212041"
     end
   end
 
   postflight do
-    if system_command("/usr/bin/xattr", args: ["-h"]).exit_status == 0
-      system_command "/usr/bin/xattr", args: ["-dr", "com.apple.quarantine", "#{staged_path}/gajevids"
+    # Remove macOS Gatekeeper quarantine flag so the wrapper can run without prompts
+    if system_command("/usr/bin/xattr", args: ["-h"]).exit_status.zero?
+      system_command "/usr/bin/xattr",
+                     args: ["-dr", "com.apple.quarantine", "#{staged_path}/gajevids"]
     end
   end
 
   caveats do
-    "After installing, you may need to remove quarantine attributes:"
+    "After installing, you may need to remove quarantine attributes manually:"
     "  sudo xattr -dr com.apple.quarantine /opt/homebrew/Caskroom/gajevids/latest"
   end
 
