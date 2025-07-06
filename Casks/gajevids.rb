@@ -2,7 +2,7 @@
 cask "gajevids" do
   desc "YAML-based FFmpeg video composition tool"
   homepage "https://github.com/gajeroll/gajevids"
-  version "0.3.15"
+  version "0.3.17"
 
   livecheck do
     skip "Auto-generated on release."
@@ -12,23 +12,27 @@ cask "gajevids" do
 
   on_macos do
     on_intel do
-      url "https://github.com/gajeroll/gajevids/releases/download/v0.3.15/gajevids_0.3.15_darwin_amd64.tar.gz"
-      sha256 "fef586b4ba9ac76cfe1cfff241ab77fc933b7562f375721c14a87f5cd4d576be"
+      url "https://github.com/gajeroll/homebrew-gajevids/releases/download/v0.3.17/gajevids_0.3.17_darwin_amd64.tar.gz",
+        verified: "github.com/gajeroll/homebrew-gajevids"
+      sha256 "c5729fdc88d6cfeab8292058d584d750fbe9377daee496b18c6ae3b4b2f7d864"
     end
     on_arm do
-      url "https://github.com/gajeroll/gajevids/releases/download/v0.3.15/gajevids_0.3.15_darwin_arm64.tar.gz"
-      sha256 "93edb6032b75aee56b31fb2525d5e75577b2694ed1acafa18ec7c2597ddc0df1"
+      url "https://github.com/gajeroll/homebrew-gajevids/releases/download/v0.3.17/gajevids_0.3.17_darwin_arm64.tar.gz",
+        verified: "github.com/gajeroll/homebrew-gajevids"
+      sha256 "9336fa61d57b7d17ab0d1b905ac1187f0d0c12cae93c674311da57c9b58c3846"
     end
   end
 
   on_linux do
     on_intel do
-      url "https://github.com/gajeroll/gajevids/releases/download/v0.3.15/gajevids_0.3.15_linux_amd64.tar.gz"
-      sha256 "2d2cbf89db40a2307e9f61f85b521bebac7cb6fa8bd274e99c7c238222fd6df3"
+      url "https://github.com/gajeroll/homebrew-gajevids/releases/download/v0.3.17/gajevids_0.3.17_linux_amd64.tar.gz",
+        verified: "github.com/gajeroll/homebrew-gajevids"
+      sha256 "9dd78acd8c5c4a0e85493033e8cc31bccb729fb14737cfc19a68993402b6c4bd"
     end
     on_arm do
-      url "https://github.com/gajeroll/gajevids/releases/download/v0.3.15/gajevids_0.3.15_linux_arm64.tar.gz"
-      sha256 "4a3bfddcb1f37b9633dc47fc33a88575b543aa5243e94e3810d0ea55759b1cfb"
+      url "https://github.com/gajeroll/homebrew-gajevids/releases/download/v0.3.17/gajevids_0.3.17_linux_arm64.tar.gz",
+        verified: "github.com/gajeroll/homebrew-gajevids"
+      sha256 "e0aa683f4260dc51957c7a3985596d679026cdd002771ee7408780f7c82e50c7"
     end
   end
 
@@ -41,7 +45,7 @@ cask "gajevids" do
   end
 
   caveats do
-    "After installing, you may need to remove quarantine attributes manually:"
+    "After installing, you may need to remove Gatekeeper quarantine attributes:"
     "  sudo xattr -dr com.apple.quarantine /opt/homebrew/Caskroom/gajevids/latest"
   end
 
