@@ -31,6 +31,15 @@ gajevids --help
 
 gajevids is a command-line tool that automatically composes multiple videos using YAML configuration files. Define video combinations and transitions with simple configuration files.
 
+You can define:
+
+- The list of input video files
+- The transition effects (fade, slide, zoom, etc.)
+- The exact sequence using a timeline
+- Frame rate and resolution
+
+All with a simple config file like `gajevids.yml`.
+
 ### Features
 
 - **Simple YAML Configuration** - Intuitive configuration files
