@@ -1,8 +1,8 @@
 cask "gajevids" do
-  version "0.3.32"
-  sha256 "affede12b6e3fc164a4e82217bda85c0012af717e1eec4bd674fa85ca1320899"
+  version "0.3.33"
+  sha256 "bef581465c24979eadb38b4a7765c662c6d56c4f7b546b64ae24b4a871d4f844"
 
-  url "https://github.com/gajeroll/homebrew-gajevids/raw/release/v0.3.32/Artifacts/gajevids.app.zip",
+  url "https://github.com/gajeroll/homebrew-gajevids/releases/download/v0.3.33/gajevids.app.zip",
       verified: "github.com/gajeroll/homebrew-gajevids"
   name "gajevids"
   desc "YAML-based FFmpeg video composition tool"
