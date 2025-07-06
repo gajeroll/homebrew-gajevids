@@ -26,8 +26,16 @@ jobs:
 
           TAG=${{ steps.vars.outputs.TAG }}
 
-          git tag -d "$TAG"        || true
+          git tag -d "$TAG" || true
           git push origin ":refs/tags/$TAG" || true
 
           git tag "$TAG"
           git push origin "$TAG" --force
+
+      - name: Publish GitHub Release
+        env:
+          TAG: ${{ steps.vars.outputs.TAG }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh release edit  "$TAG" --draft=false \
+            || gh release create "$TAG" --generate-notes
