@@ -1,0 +1,35 @@
+name: tag-release
+
+on:
+  pull_request:
+    types: [closed]
+    branches: [main]
+
+jobs:
+  release:
+    if: github.event.pull_request.merged == true
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Extract version from Casks
+        id: version
+        run: |
+          VERSION=$(grep -E '^  version "[0-9.]+"' Casks/gajevids.rb | grep -oE '[0-9.]+')
+          echo "VERSION=$VERSION" >> $GITHUB_ENV
+          echo "TAG=v$VERSION" >> $GITHUB_ENV
+          echo "::set-output name=tag::v$VERSION"
+
+      - name: Create release tag
+        run: |
+          git config user.name "Gajevids Bot"
+          git config user.email "bot@example.com"
+          git tag ${{ env.TAG }}
+          git push origin ${{ env.TAG }}
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v1
+        with:
+          tag_name: ${{ env.TAG }}
+          name: gajevids ${{ env.TAG }}
