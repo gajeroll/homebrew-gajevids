@@ -16,7 +16,7 @@ jobs:
       - id: vars
         name: Set tag variable
         run: |
-          VERSION=$(grep -oE 'version "[0-9.]+"' Casks/gajevids.rb | grep -oE '[0-9.]+')
+          VERSION=$(grep -oE 'version "[0-9.]+"' Formula/gajevids.rb | grep -oE '[0-9.]+')
           echo "TAG=v$VERSION" >> $GITHUB_OUTPUT
 
       - name: Move tag to merge commit
