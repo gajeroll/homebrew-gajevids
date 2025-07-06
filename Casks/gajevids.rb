@@ -2,7 +2,7 @@
 cask "gajevids" do
   desc "YAML-based FFmpeg video composition tool"
   homepage "https://github.com/gajeroll/gajevids"
-  version "0.3.17"
+  version "0.3.18"
 
   livecheck do
     skip "Auto-generated on release."
@@ -12,32 +12,31 @@ cask "gajevids" do
 
   on_macos do
     on_intel do
-      url "https://github.com/gajeroll/homebrew-gajevids/releases/download/v0.3.17/gajevids_0.3.17_darwin_amd64.tar.gz",
+      url "https://github.com/gajeroll/homebrew-gajevids/releases/download/v0.3.18/gajevids_0.3.18_darwin_amd64.tar.gz",
         verified: "github.com/gajeroll/homebrew-gajevids"
-      sha256 "c5729fdc88d6cfeab8292058d584d750fbe9377daee496b18c6ae3b4b2f7d864"
+      sha256 "76bbe2eb3d0e47771fc5d685250ff06e4185e34b2fc9e147335aac3ccd3ab14b"
     end
     on_arm do
-      url "https://github.com/gajeroll/homebrew-gajevids/releases/download/v0.3.17/gajevids_0.3.17_darwin_arm64.tar.gz",
+      url "https://github.com/gajeroll/homebrew-gajevids/releases/download/v0.3.18/gajevids_0.3.18_darwin_arm64.tar.gz",
         verified: "github.com/gajeroll/homebrew-gajevids"
-      sha256 "9336fa61d57b7d17ab0d1b905ac1187f0d0c12cae93c674311da57c9b58c3846"
+      sha256 "fb7f41c8461a5ad41fe488668cf538522e96a18c3b3de41be24f9a3dc23f0bbb"
     end
   end
 
   on_linux do
     on_intel do
-      url "https://github.com/gajeroll/homebrew-gajevids/releases/download/v0.3.17/gajevids_0.3.17_linux_amd64.tar.gz",
+      url "https://github.com/gajeroll/homebrew-gajevids/releases/download/v0.3.18/gajevids_0.3.18_linux_amd64.tar.gz",
         verified: "github.com/gajeroll/homebrew-gajevids"
-      sha256 "9dd78acd8c5c4a0e85493033e8cc31bccb729fb14737cfc19a68993402b6c4bd"
+      sha256 "d4701dbc61afac90bf9cba60e6a76beb003457ea41d27fc82e76bc53026fd234"
     end
     on_arm do
-      url "https://github.com/gajeroll/homebrew-gajevids/releases/download/v0.3.17/gajevids_0.3.17_linux_arm64.tar.gz",
+      url "https://github.com/gajeroll/homebrew-gajevids/releases/download/v0.3.18/gajevids_0.3.18_linux_arm64.tar.gz",
         verified: "github.com/gajeroll/homebrew-gajevids"
-      sha256 "e0aa683f4260dc51957c7a3985596d679026cdd002771ee7408780f7c82e50c7"
+      sha256 "f196a24b18a5b096da01202c1b50c28c138faab1d46be129f1c86f3fdb58b4c2"
     end
   end
 
   postflight do
-    # Remove macOS Gatekeeper quarantine flag so the wrapper can run without prompts
     if system_command("/usr/bin/xattr", args: ["-h"]).exit_status.zero?
       system_command "/usr/bin/xattr",
                      args: ["-dr", "com.apple.quarantine", "#{staged_path}/gajevids"]
