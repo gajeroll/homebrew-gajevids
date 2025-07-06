@@ -49,6 +49,8 @@ This formula automatically installs the required dependencies:
 
 ## Example Configuration
 
+<!-- start example_gajevids.yml -->
+
 ```yaml
 output: "output.mp4"
 fps: 30
@@ -75,6 +77,9 @@ timeline:
   - video: main
   - video: outro
 ```
+
+<!-- end example_gajevids.yml -->
+
 
 ## License
 
