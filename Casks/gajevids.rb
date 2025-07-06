@@ -2,7 +2,7 @@
 cask "gajevids" do
   desc "YAML-based FFmpeg video composition tool"
   homepage "https://github.com/gajeroll/gajevids"
-  version "0.3.8"
+  version "0.3.9"
 
   livecheck do
     skip "Auto-generated on release."
@@ -12,23 +12,23 @@ cask "gajevids" do
 
   on_macos do
     on_intel do
-      url "https://github.com/gajeroll/gajevids/releases/download/v0.3.8/gajevids_v0.3.8_darwin_amd64.tar.gz"
-      sha256 "79368e2dc362cfac7911508e9b6e04be4204026cd098ed0548ef6056aa269a81"
+      url "https://github.com/gajeroll/gajevids/releases/download/v0.3.9/gajevids_v0.3.9_darwin_amd64.tar.gz"
+      sha256 "06586fe0b691a36073b4ed5b9d9484d011f9801975008bd9ac3141055af14637"
     end
     on_arm do
-      url "https://github.com/gajeroll/gajevids/releases/download/v0.3.8/gajevids_v0.3.8_darwin_arm64.tar.gz"
-      sha256 "9d08b4900030dede506812fbccc3016682f798372a4056075689b3e76d99dc71"
+      url "https://github.com/gajeroll/gajevids/releases/download/v0.3.9/gajevids_v0.3.9_darwin_arm64.tar.gz"
+      sha256 "49ad45dda0f0cd2f45b80622e32cf54f3d00986a5b6cb6286087710fe1f8cc49"
     end
   end
 
   on_linux do
     on_intel do
-      url "https://github.com/gajeroll/gajevids/releases/download/v0.3.8/gajevids_v0.3.8_linux_amd64.tar.gz"
-      sha256 "d94bd53c0293c903e278fce12736c2fd71f1a72344ee7fd524b7ee9fa92ad099"
+      url "https://github.com/gajeroll/gajevids/releases/download/v0.3.9/gajevids_v0.3.9_linux_amd64.tar.gz"
+      sha256 "0fbbfc2c72ba7310df7cdd91c281a8953dbad5aa9524ffa95ceab63636eed799"
     end
     on_arm do
-      url "https://github.com/gajeroll/gajevids/releases/download/v0.3.8/gajevids_v0.3.8_linux_arm64.tar.gz"
-      sha256 "55b2275ccd67f0dd2ebefb280c3fb8f51432d4a253cf76adea02bb3e8ad9f9a4"
+      url "https://github.com/gajeroll/gajevids/releases/download/v0.3.9/gajevids_v0.3.9_linux_arm64.tar.gz"
+      sha256 "0f511fd9f2db10eadfca93cb9f622b6d5ba87938c8907aa43435f11a660d0986"
     end
   end
 
