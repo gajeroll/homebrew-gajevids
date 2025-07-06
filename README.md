@@ -1,10 +1,6 @@
-
-
 # homebrew-gajevids
 
 Homebrew tap for `gajevids` - YAML-based FFmpeg video composition tool.
-
-GitHub: https://github.com/gajeroll/homebrew-gajevids
 
 ## Installation
 
