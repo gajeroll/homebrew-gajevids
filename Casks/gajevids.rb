@@ -2,7 +2,7 @@
 cask "gajevids" do
   desc "YAML-based FFmpeg video composition tool"
   homepage "https://github.com/gajeroll/gajevids"
-  version "0.3.24"
+  version "0.3.25"
 
   livecheck do
     skip "Auto-generated on release."
@@ -12,27 +12,27 @@ cask "gajevids" do
 
   on_macos do
     on_intel do
-      url "https://github.com/gajeroll/homebrew-gajevids/releases/download/v0.3.24/gajevids_0.3.24_darwin_amd64.tar.gz",
+      url "https://github.com/gajeroll/homebrew-gajevids/releases/download/v0.3.25/gajevids_0.3.25_darwin_amd64.tar.gz",
         verified: "github.com/gajeroll/homebrew-gajevids"
-      sha256 "be894c816e6d606da9c5d0ec6f89d6373ea0827e5fafe397109352cb9cf28a76"
+      sha256 "b8be81d886761969d11fb6ca6f8736c302e51ccf02486ac424ed425c64c8b25e"
     end
     on_arm do
-      url "https://github.com/gajeroll/homebrew-gajevids/releases/download/v0.3.24/gajevids_0.3.24_darwin_arm64.tar.gz",
+      url "https://github.com/gajeroll/homebrew-gajevids/releases/download/v0.3.25/gajevids_0.3.25_darwin_arm64.tar.gz",
         verified: "github.com/gajeroll/homebrew-gajevids"
-      sha256 "11e213580716823fd912cf0329e6164dd025b5fc0e480376e1d276b02a94b689"
+      sha256 "b27469581335a4954108d8447987f841999da590a2996046c965c5b3bafc8177"
     end
   end
 
   on_linux do
     on_intel do
-      url "https://github.com/gajeroll/homebrew-gajevids/releases/download/v0.3.24/gajevids_0.3.24_linux_amd64.tar.gz",
+      url "https://github.com/gajeroll/homebrew-gajevids/releases/download/v0.3.25/gajevids_0.3.25_linux_amd64.tar.gz",
         verified: "github.com/gajeroll/homebrew-gajevids"
-      sha256 "9032ca2f001c2b6d1c5d7e743e621252f800be0c07b176e0219d01503d902692"
+      sha256 "6500753252fc6f617544d33af37383a7ffb1781534e7b243ecb48c0202bdb7ff"
     end
     on_arm do
-      url "https://github.com/gajeroll/homebrew-gajevids/releases/download/v0.3.24/gajevids_0.3.24_linux_arm64.tar.gz",
+      url "https://github.com/gajeroll/homebrew-gajevids/releases/download/v0.3.25/gajevids_0.3.25_linux_arm64.tar.gz",
         verified: "github.com/gajeroll/homebrew-gajevids"
-      sha256 "e18bc530e07717332ac85cf889644de423a08287336ef7539c573dcfa18ddec0"
+      sha256 "9c20d9b1b68e9f257c47fab8975d13a9b2f3f936f7b4433fd5845ba5cc1f2918"
     end
   end
 
