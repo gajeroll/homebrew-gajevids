@@ -1,10 +1,10 @@
 class Gajevids < Formula
   desc "YAML-based FFmpeg video composition tool"
   homepage "https://github.com/gajeroll/homebrew-gajevids"
-  version "0.3.46"
-  sha256 "c565b50d2e10edd6e8e3bd11d723477a75a847e6258927622b1585dc2ffa2980"
+  version "0.3.47"
+  sha256 "b22dc924a903754588e08ebb544d36857fca99b4318ab56f9e86a2a6ad976bf5"
 
-  url "https://github.com/gajeroll/homebrew-gajevids/releases/download/v0.3.46/gajevids_0.3.46_darwin_arm64.tar.gz"
+  url "https://github.com/gajeroll/homebrew-gajevids/releases/download/v0.3.47/gajevids_0.3.47_darwin_arm64.tar.gz"
 
   def install
     bin.install "gajevids"
