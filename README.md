@@ -112,9 +112,9 @@ timeline:
   - video: outro
 
 # Additional FFmpeg arguments
+pix_fmt: yuv420p
 ffmpeg_args:
   "-movflags": "+faststart"
-  "-pix_fmt": "yuv420p"
   "-c:v": "libx264"
   "-profile:v": "main"
   "-preset": "medium"
